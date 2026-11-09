@@ -8,11 +8,11 @@ Il y a **deux versions** du TP :
 
 Ma méthode : entre le point 1 et le point 2 on met un point au milieu, entre le point 2 et le point 3 aussi, etc.
 À chaque itération on recommence avec tous les points, donc il y en a de plus en plus (le nombre double à chaque fois).
-Le résultat est dans `fig4_methode_milieux.png` (avec un zoom pour bien voir les points).
+Le résultat est dans `fig4_milieux_3_iterations.png` (avec un zoom pour bien voir les points).
 
 Résultat avec 3 itérations (80 → 160 → 320 → 640 points), points noirs = anciens points, roses = nouveaux milieux :
 
-![Méthode des milieux, 3 itérations](fig4_methode_milieux.png)
+![Méthode des milieux, 3 itérations](fig4_milieux_3_iterations.png)
 
 On donne le nombre d'itérations en argument (3 par défaut) :
 
