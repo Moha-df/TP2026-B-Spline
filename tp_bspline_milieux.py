@@ -71,5 +71,5 @@ for essai in range(1, nb + 1):           # essai = 1, 2, ..., nb
     X = Xnew
     Y = Ynew
 
-plt.savefig("fig4_methode_milieux.png", dpi=120)
+plt.savefig("fig4_milieux_3_iterations.png", dpi=120)
 print("fini, il y a", len(X), "points à la fin")
