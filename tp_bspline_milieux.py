@@ -51,19 +51,18 @@ for essai in range(1, nb + 1):           # essai = 1, 2, ..., nb
         Ym.append(ym)
 
     # 3) Dessin : points de départ en noir, nouveaux milieux en rose
-    # Ligne du haut : toute la forme
+    # Ligne du haut : toute la forme (juste la ligne, sans les points)
     plt.subplot(2, nb, essai)
     plt.plot(Xnew + [Xnew[0]], Ynew + [Ynew[0]], "k-", linewidth=0.5)  # on relie tout
-    plt.plot(X, Y, "k.", markersize=3)                                 # anciens points
-    plt.plot(Xm, Ym, "m.", markersize=3)                               # nouveaux points
     plt.title("essai " + str(essai) + " : " + str(len(Xnew)) + " points")
     plt.axis("equal")
 
     # Ligne du bas : ZOOM sur une petite zone pour bien voir tous les points
     plt.subplot(2, nb, nb + essai)
     plt.plot(Xnew + [Xnew[0]], Ynew + [Ynew[0]], "k-", linewidth=0.5)
-    plt.plot(X, Y, "ko", markersize=5)
-    plt.plot(Xm, Ym, "mo", markersize=3)
+    plt.plot(X, Y, "ko", markersize=5, label="anciens points (noir)")
+    plt.plot(Xm, Ym, "mo", markersize=3, label="nouveaux milieux (rose)")
+    plt.legend(loc="lower right", fontsize=7)
     plt.xlim(10, 30)
     plt.ylim(40, 60)
     plt.title("zoom")
