@@ -1,28 +1,48 @@
-"""TP - Reconstruction d'un contour : méthode "points milieux".
-
-Entre le point 1 et 2 on met un point au milieu, entre 2 et 3 aussi, etc.,
-puis on relie les points milieux entre eux. On peut recommencer.
-"""
-import numpy as np
+# Méthode des points milieux
+# Idée : entre le point 1 et le point 2 je mets un point au milieu,
+# entre le point 2 et le point 3 aussi, etc.
+# Ensuite je relie tous les points du milieu entre eux.
 import matplotlib
-matplotlib.use("Agg")
+matplotlib.use("Agg")          # pour enregistrer l'image sans ouvrir de fenêtre
 import matplotlib.pyplot as plt
 
-data = np.loadtxt("points_contour_piece_bspline.csv", delimiter=",", skiprows=1)
-pts = data[:, 1:3]
+# 1) Lire le fichier avec les points
+fichier = open("points_contour_piece_bspline.csv")
+lignes = fichier.readlines()
+fichier.close()
 
+X = []   # liste des x
+Y = []   # liste des y
+for i in range(1, len(lignes)):          # on saute la 1ère ligne (index,x,y)
+    morceaux = lignes[i].split(",")
+    X.append(float(morceaux[1]))
+    Y.append(float(morceaux[2]))
 
-def milieux(P):
-    """Milieu de chaque couple de points consécutifs (contour fermé => on boucle)."""
-    return (P + np.roll(P, -1, axis=0)) / 2
+# 2) Faire 3 fois la méthode du milieu
+plt.figure(figsize=(15, 5))
 
+for essai in range(1, 4):                # essai = 1, 2, 3
+    n = len(X)
+    Xm = []                              # x des points milieux
+    Ym = []                              # y des points milieux
 
-fig, axs = plt.subplots(1, 3, figsize=(15, 5))
-P = pts.copy()
-for ax, it in zip(axs, [1, 2, 3]):
-    M = milieux(P)
-    ax.plot(*np.vstack([P, P[0]]).T, "k.-", lw=0.4, label="points de départ")
-    ax.plot(*np.vstack([M, M[0]]).T, "m-o", ms=3, label="milieux reliés")
-    ax.set_title(f"itération {it}"); ax.axis("equal"); ax.legend(fontsize=7)
-    P = M
-plt.tight_layout(); plt.savefig("fig4_methode_milieux.png", dpi=120); plt.close()
+    for i in range(n):
+        j = i + 1                        # le point suivant
+        if j == n:                       # si on est au dernier point,
+            j = 0                        # le suivant c'est le premier (contour fermé)
+        Xm.append((X[i] + X[j]) / 2)     # milieu = moyenne des 2 points
+        Ym.append((Y[i] + Y[j]) / 2)
+
+    # 3) Dessin : points de départ en noir, milieux reliés en rose
+    plt.subplot(1, 3, essai)
+    plt.plot(X + [X[0]], Y + [Y[0]], "k.-", linewidth=0.5)     # départ
+    plt.plot(Xm + [Xm[0]], Ym + [Ym[0]], "m-o", markersize=3)  # milieux
+    plt.title("essai " + str(essai))
+    plt.axis("equal")
+
+    # 4) Les milieux deviennent les nouveaux points pour l'essai suivant
+    X = Xm
+    Y = Ym
+
+plt.savefig("fig4_methode_milieux.png", dpi=120)
+print("fini")
