@@ -1,7 +1,7 @@
 # Méthode des points milieux
 # Idée : entre le point 1 et le point 2 je mets un point au milieu,
 # entre le point 2 et le point 3 aussi, etc.
-# Ensuite je relie tous les points du milieu entre eux.
+# Je garde tous les anciens points et j'ajoute les milieux : il y a de plus en plus de points.
 import sys
 import matplotlib
 matplotlib.use("Agg")          # pour enregistrer l'image sans ouvrir de fenêtre
@@ -26,31 +26,41 @@ for i in range(1, len(lignes)):          # on saute la 1ère ligne (index,x,y)
     X.append(float(morceaux[1]))
     Y.append(float(morceaux[2]))
 
-# 2) Faire nb fois la méthode du milieu
+# 2) Faire nb fois : on AJOUTE un point au milieu entre chaque couple de points
 plt.figure(figsize=(5 * nb, 5))
 
 for essai in range(1, nb + 1):           # essai = 1, 2, ..., nb
     n = len(X)
-    Xm = []                              # x des points milieux
-    Ym = []                              # y des points milieux
+    Xnew = []                            # nouvelle liste de x (points + milieux)
+    Ynew = []                            # nouvelle liste de y
+    Xm = []                              # seulement les milieux (pour les dessiner en rose)
+    Ym = []
 
     for i in range(n):
         j = i + 1                        # le point suivant
         if j == n:                       # si on est au dernier point,
             j = 0                        # le suivant c'est le premier (contour fermé)
-        Xm.append((X[i] + X[j]) / 2)     # milieu = moyenne des 2 points
-        Ym.append((Y[i] + Y[j]) / 2)
+        xm = (X[i] + X[j]) / 2           # milieu = moyenne des 2 points
+        ym = (Y[i] + Y[j]) / 2
 
-    # 3) Dessin : points de départ en noir, milieux reliés en rose
+        Xnew.append(X[i])                # d'abord le point de départ
+        Ynew.append(Y[i])
+        Xnew.append(xm)                  # puis le point du milieu juste après
+        Ynew.append(ym)
+        Xm.append(xm)
+        Ym.append(ym)
+
+    # 3) Dessin : points de départ en noir, nouveaux milieux en rose
     plt.subplot(1, nb, essai)
-    plt.plot(X + [X[0]], Y + [Y[0]], "k.-", linewidth=0.5)     # départ
-    plt.plot(Xm + [Xm[0]], Ym + [Ym[0]], "m-o", markersize=3)  # milieux
-    plt.title("essai " + str(essai))
+    plt.plot(Xnew + [Xnew[0]], Ynew + [Ynew[0]], "k-", linewidth=0.5)  # on relie tout
+    plt.plot(X, Y, "k.", markersize=4)                                 # anciens points
+    plt.plot(Xm, Ym, "m.", markersize=4)                               # nouveaux points
+    plt.title("essai " + str(essai) + " : " + str(len(Xnew)) + " points")
     plt.axis("equal")
 
-    # 4) Les milieux deviennent les nouveaux points pour l'essai suivant
-    X = Xm
-    Y = Ym
+    # 4) La nouvelle liste (points + milieux) sert pour l'essai suivant
+    X = Xnew
+    Y = Ynew
 
 plt.savefig("fig4_methode_milieux.png", dpi=120)
-print("fini")
+print("fini, il y a", len(X), "points à la fin")
