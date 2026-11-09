@@ -27,7 +27,7 @@ for i in range(1, len(lignes)):          # on saute la 1ère ligne (index,x,y)
     Y.append(float(morceaux[2]))
 
 # 2) Faire nb fois : on AJOUTE un point au milieu entre chaque couple de points
-plt.figure(figsize=(5 * nb, 5))
+plt.figure(figsize=(5 * nb, 10))
 
 for essai in range(1, nb + 1):           # essai = 1, 2, ..., nb
     n = len(X)
@@ -51,12 +51,22 @@ for essai in range(1, nb + 1):           # essai = 1, 2, ..., nb
         Ym.append(ym)
 
     # 3) Dessin : points de départ en noir, nouveaux milieux en rose
-    plt.subplot(1, nb, essai)
+    # Ligne du haut : toute la forme
+    plt.subplot(2, nb, essai)
     plt.plot(Xnew + [Xnew[0]], Ynew + [Ynew[0]], "k-", linewidth=0.5)  # on relie tout
-    plt.plot(X, Y, "k.", markersize=4)                                 # anciens points
-    plt.plot(Xm, Ym, "m.", markersize=4)                               # nouveaux points
+    plt.plot(X, Y, "k.", markersize=3)                                 # anciens points
+    plt.plot(Xm, Ym, "m.", markersize=3)                               # nouveaux points
     plt.title("essai " + str(essai) + " : " + str(len(Xnew)) + " points")
     plt.axis("equal")
+
+    # Ligne du bas : ZOOM sur une petite zone pour bien voir tous les points
+    plt.subplot(2, nb, nb + essai)
+    plt.plot(Xnew + [Xnew[0]], Ynew + [Ynew[0]], "k-", linewidth=0.5)
+    plt.plot(X, Y, "ko", markersize=5)
+    plt.plot(Xm, Ym, "mo", markersize=3)
+    plt.xlim(10, 30)
+    plt.ylim(40, 60)
+    plt.title("zoom")
 
     # 4) La nouvelle liste (points + milieux) sert pour l'essai suivant
     X = Xnew
