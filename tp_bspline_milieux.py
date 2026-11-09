@@ -2,9 +2,17 @@
 # Idée : entre le point 1 et le point 2 je mets un point au milieu,
 # entre le point 2 et le point 3 aussi, etc.
 # Ensuite je relie tous les points du milieu entre eux.
+import sys
 import matplotlib
 matplotlib.use("Agg")          # pour enregistrer l'image sans ouvrir de fenêtre
 import matplotlib.pyplot as plt
+
+# Nombre d'itérations donné en argument : python tp_bspline_milieux.py 5
+# (si on ne donne rien, on prend 3)
+if len(sys.argv) > 1:
+    nb = int(sys.argv[1])
+else:
+    nb = 3
 
 # 1) Lire le fichier avec les points
 fichier = open("points_contour_piece_bspline.csv")
@@ -18,10 +26,10 @@ for i in range(1, len(lignes)):          # on saute la 1ère ligne (index,x,y)
     X.append(float(morceaux[1]))
     Y.append(float(morceaux[2]))
 
-# 2) Faire 3 fois la méthode du milieu
-plt.figure(figsize=(15, 5))
+# 2) Faire nb fois la méthode du milieu
+plt.figure(figsize=(5 * nb, 5))
 
-for essai in range(1, 4):                # essai = 1, 2, 3
+for essai in range(1, nb + 1):           # essai = 1, 2, ..., nb
     n = len(X)
     Xm = []                              # x des points milieux
     Ym = []                              # y des points milieux
@@ -34,7 +42,7 @@ for essai in range(1, 4):                # essai = 1, 2, 3
         Ym.append((Y[i] + Y[j]) / 2)
 
     # 3) Dessin : points de départ en noir, milieux reliés en rose
-    plt.subplot(1, 3, essai)
+    plt.subplot(1, nb, essai)
     plt.plot(X + [X[0]], Y + [Y[0]], "k.-", linewidth=0.5)     # départ
     plt.plot(Xm + [Xm[0]], Ym + [Ym[0]], "m-o", markersize=3)  # milieux
     plt.title("essai " + str(essai))
