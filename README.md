@@ -6,13 +6,34 @@ Il y a **deux versions** du TP :
 
 ## Version moi : `tp_bspline_milieux.py`
 
-Ma méthode : entre le point 1 et le point 2 on met un point au milieu, entre le point 2 et le point 3 aussi, etc.
-À chaque itération on recommence avec tous les points, donc il y en a de plus en plus (le nombre double à chaque fois).
-Le résultat est dans `fig4_milieux_3_iterations.png` (avec un zoom pour bien voir les points).
+### L'idée de départ (et pourquoi elle ne marchait pas)
 
-Résultat avec 3 itérations (80 → 160 → 320 → 640 points), points noirs = anciens points, roses = nouveaux milieux :
+Idée : entre le point 1 et le point 2 on met un point au milieu, entre le point 2 et le point 3 aussi, etc.
 
-![Méthode des milieux, 3 itérations](fig4_milieux_3_iterations.png)
+- Si on **garde** les anciens points et qu'on ajoute les milieux : un milieu est **sur** le segment,
+  donc la forme ne change pas du tout, on a juste plus de points sur les mêmes droites.
+- Si on garde **seulement** les milieux : on a toujours 80 points et les angles restent aussi pointus
+  (ils sont juste décalés et la forme rétrécit un peu).
+
+### La correction : couper les coins (algorithme de Chaikin)
+
+Sur chaque segment `[P, Q]` on met **deux** points au lieu d'un :
+
+- un au quart : `3/4·P + 1/4·Q` (proche de P)
+- un aux trois quarts : `1/4·P + 3/4·Q` (proche de Q)
+
+On **saute les anciens points** : ce sont eux qui faisaient les coins. Chaque angle est donc remplacé
+par deux angles plus doux. Le nombre de points double à chaque itération (80 → 160 → 320 → 640),
+et en répétant, la courbe devient lisse.
+
+Ce n'est pas un hasard : à la limite, on obtient exactement la **B-spline de degré 2** dont les
+points du fichier sont les points de contrôle. C'est une autre façon de construire une B-spline,
+sans formule, juste avec des moyennes de points.
+
+Résultat avec 3 itérations. En haut : points de départ (noir) et courbe obtenue (rose).
+En bas : zoom sur un coin, avant (noir) et après (rose) chaque itération.
+
+![Méthode des coins coupés, 3 itérations](fig4_milieux_3_iterations.png)
 
 On donne le nombre d'itérations en argument (3 par défaut) :
 
@@ -20,7 +41,8 @@ On donne le nombre d'itérations en argument (3 par défaut) :
 python tp_bspline_milieux.py 5
 ```
 
-Remarque : les milieux sont sur les segments entre les points, donc la forme ne change pas, elle a juste plus de points.
+Remarque : vers (20, 55), la courbe se croise. Ça vient des points du fichier : le contour se croise
+déjà à cet endroit, ce n'est pas un bug de la méthode.
 
 ## Version Claude : `tp_bspline_normal.py`
 
