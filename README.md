@@ -67,6 +67,59 @@ Effet d'un point de contrôle déplacé :
 
 ![Point de contrôle déplacé](fig3_modif_controle.png)
 
+## Extension : surface B-spline
+
+On passe d'une courbe à une **surface**. Pour ça on fabrique une **grille de points de contrôle** :
+le contour du fichier est empilé sur 5 étages (z = 0, 10, 20, 30, 40). Le 1er et le dernier
+étage sont rétrécis de moitié autour du centre de la forme, ce qui arrondit les bords en haut et en bas.
+On obtient une grille de 5 × 80 points, et on construit la surface qui « habille » cette grille.
+
+Les deux versions utilisent la même grille, donc on peut les comparer.
+
+### Version moi : `tp_surface_milieux.py`
+
+C'est la même idée que pour la courbe, **couper les coins (Chaikin)**, mais dans les deux sens :
+
+1. sur chaque étage (dans le sens du contour, fermé), on coupe les coins ;
+2. sur chaque colonne (de bas en haut, ouverte), on coupe aussi les coins. On garde le point du bas et celui du haut pour ne pas raccourcir la pièce.
+
+À chaque itération, la grille double dans les deux sens (5 × 80 → 10 × 160 → 20 × 320 → 40 × 640)
+et la surface devient lisse. À la limite, c'est une surface B-spline de degré 2 dans les deux sens.
+
+```
+python tp_surface_milieux.py 3
+```
+
+![Surface par coins coupés](fig5_surface_coins_coupes.png)
+
+### Version Claude : `tp_surface_normal.py`
+
+C'est la définition classique d'une surface B-spline, le **produit tensoriel** :
+
+```
+S(u, v) = Σ_i Σ_j  N_i(u) · M_j(v) · P_ij
+```
+
+- `u` fait le tour du contour : B-spline **cubique périodique**, donc la surface se referme sans couture ;
+- `v` va du bas vers le haut : B-spline **cubique clamped**, donc la surface commence exactement au 1er étage et finit au dernier ;
+- `P_ij` : la grille de points de contrôle, `N_i` et `M_j` : les fonctions de base B-spline (calculées avec `scipy`).
+
+On calcule directement autant de points de la surface qu'on veut, sans itérations.
+La figure montre la grille de contrôle (rouge), la surface bicubique, puis l'effet d'un point de contrôle
+déplacé : sur la coupe à mi-hauteur, seule une petite zone autour du point bouge. C'est le **contrôle local** des B-splines.
+
+```
+python tp_surface_normal.py
+```
+
+![Surface B-spline bicubique](fig6_surface_bspline.png)
+
+**Différence entre les deux** : ma version donne une surface de degré 2 par subdivision, avec seulement des
+moyennes de points. La version Claude donne une surface de degré 3, définie par une formule : on peut
+l'évaluer en n'importe quel `(u, v)`, choisir le degré et déplacer un point de contrôle sans tout recalculer.
+
+Remarque : vers (20, 55), le contour du fichier se croise déjà, donc la surface se croise aussi à cet endroit.
+
 ## Modules nécessaires
 
 `numpy`, `scipy`, `matplotlib`
