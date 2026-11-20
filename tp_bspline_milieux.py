@@ -85,5 +85,5 @@ for essai in range(1, nb + 1):           # essai = 1, 2, ..., nb
     Y = Ynew
 
 plt.tight_layout()
-plt.savefig("fig4_milieux_3_iterations.png", dpi=120)
+plt.savefig("fig4_coins_coupes.png", dpi=120)
 print("fini, il y a", len(X), "points à la fin")

@@ -33,7 +33,7 @@ sans formule, juste avec des moyennes de points.
 Résultat avec 3 itérations. En haut : points de départ (noir) et courbe obtenue (rose).
 En bas : zoom sur un coin, avant (noir) et après (rose) chaque itération.
 
-![Méthode des coins coupés, 3 itérations](fig4_milieux_3_iterations.png)
+![Méthode des coins coupés, 3 itérations](fig4_coins_coupes.png)
 
 On donne le nombre d'itérations en argument (3 par défaut) :
 
