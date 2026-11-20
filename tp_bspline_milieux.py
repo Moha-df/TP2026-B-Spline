@@ -1,7 +1,9 @@
-# Méthode des points milieux
+# Méthode des points milieux (lissage des angles)
 # Idée : entre le point 1 et le point 2 je mets un point au milieu,
 # entre le point 2 et le point 3 aussi, etc.
-# Je garde tous les anciens points et j'ajoute les milieux : il y a de plus en plus de points.
+# Je ne garde QUE les milieux (je saute les anciens points) : les coins sont coupés
+# donc la courbe s'adoucit à chaque itération.
+# (Avant je gardais les anciens points en plus : la courbe ne changeait pas du tout.)
 import sys
 import matplotlib
 matplotlib.use("Agg")          # pour enregistrer l'image sans ouvrir de fenêtre
@@ -43,9 +45,7 @@ for essai in range(1, nb + 1):           # essai = 1, 2, ..., nb
         xm = (X[i] + X[j]) / 2           # milieu = moyenne des 2 points
         ym = (Y[i] + Y[j]) / 2
 
-        Xnew.append(X[i])                # d'abord le point de départ
-        Ynew.append(Y[i])
-        Xnew.append(xm)                  # puis le point du milieu juste après
+        Xnew.append(xm)                  # on garde seulement le milieu (l'ancien point saute)
         Ynew.append(ym)
         Xm.append(xm)
         Ym.append(ym)
@@ -59,7 +59,8 @@ for essai in range(1, nb + 1):           # essai = 1, 2, ..., nb
 
     # Ligne du bas : ZOOM sur une petite zone pour bien voir tous les points
     plt.subplot(2, nb, nb + essai)
-    plt.plot(Xnew + [Xnew[0]], Ynew + [Ynew[0]], "k-", linewidth=0.5)
+    plt.plot(X + [X[0]], Y + [Y[0]], "k-", linewidth=0.5)       # ancienne ligne (noir)
+    plt.plot(Xnew + [Xnew[0]], Ynew + [Ynew[0]], "m-", linewidth=0.8)  # nouvelle ligne (rose)
     plt.plot(X, Y, "ko", markersize=5, label="anciens points (noir)")
     plt.plot(Xm, Ym, "mo", markersize=3, label="nouveaux milieux (rose)")
     plt.legend(loc="lower right", fontsize=7)
